@@ -18,5 +18,15 @@ Route::get('', [EmployeeController::class, 'getEmployees']);
 
 Route::get('add', [EmployeeController::class, 'insertform']);
 
-
 Route::post('create', [EmployeeController::class, 'addEmployees']);
+
+Route::get('edit/{id}', [EmployeeController::class, 'editEmployees']);
+
+Route::put('update/{id}', [EmployeeController::class, 'update']);
+
+Route::get('/search/', [EmployeeController::class, 'getEmployees']);
+
+Route::get('pdf', [EmployeeController::class, 'createPDF']);
+
+Route::get('excel', [EmployeeController::class, 'createExcel']);
+
