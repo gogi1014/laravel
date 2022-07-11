@@ -4,3 +4,4 @@
     <a href="{{ url('add') }}" class="btn btn-primary" type="button">Add Employees</a>
   </form>
 </nav>
+

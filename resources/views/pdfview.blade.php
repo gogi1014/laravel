@@ -1,15 +1,5 @@
 @extends('layout.master')
 @section('content')
-
-<br>
-<form action="{{ url('/') }}" method="GET">
-    <input type="text" name="search" required />
-    <button type="submit">Search</button>
-    <input type="button" onclick="printDiv('printableArea')" value="Print" />
-    <a class="btn btn-primary" href="{{ URL::to('/pdf') }}">Export to PDF</a>
-    <a class="btn btn-primary" href="{{ URL::to('/excel') }}">Export to Excel</a>
-</form>
-
 <div id="printableArea">
     <table class="table table-striped table-dark">
         <thead>
@@ -41,14 +31,4 @@
         for($page_number = 1; $page_number<= @$total_pages; $page_number++) { @$pagLink .='<li class="page-item"><a class="page-link" href="?page=' .$page_number.'&search='.$search.'" >'.$page_number.'</a>';}
     echo @$pagLink . " </ul>" @endphp
 </div>
-
-
-
-<script>
-    function printDiv(divName) {
-        var printContents = document.getElementById(divName).innerHTML;
-        document.body.innerHTML = printContents;
-        window.print();
-    }
-</script>
 @endsection

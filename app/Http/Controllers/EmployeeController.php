@@ -24,15 +24,15 @@ class EmployeeController extends Controller
     {
         $search = $request->input('search');
         $page = $request->has('page') ? $request->get('page') : 1;
-        $limit = $request->has('limit') ? $request->get('limit') : 1;
+        $limit = 2;
         $pagg_one = Employee::where('section', 'LIKE', "%{$search}%");
-        $pagg = Employee::where('name', 'LIKE', "%{$search}%")->union($pagg_one)->orderBy('id', 'desc')->orWhere('section', 'LIKE', "%{$search}%")
+        $pagg = Employee::where('name', 'LIKE', "%{$search}%")->union($pagg_one)->orderBy('id', 'desc')
             ->limit($limit)->offset(($page - 1) * $limit)->get();
-        $employees = Employee::all();
-        $total_rows = count($employees); 
-        $total_pages = ceil ($total_rows / $limit);     
-
-        return view('employees', ['employees' => $pagg, 'total_pages' => $total_pages,'total_rows' => $total_rows,'search' => $search]);
+        $employees = Employee::where('name', 'LIKE', "%{$search}%")->union($pagg_one)->orderBy('id', 'desc')
+        ->get()->count();
+        $total_pages = ceil($employees / $limit);     
+        return view('employees', ['employees' => $pagg, 'total_pages' => $total_pages,'search' => $search,
+        ]);
     }
     public function insertform()
     {
@@ -82,7 +82,7 @@ class EmployeeController extends Controller
     {
         $data = Employee::all();
         view()->share('employees', $data);
-        $pdf = PDF::loadView('employees', compact("data"));
+        $pdf = PDF::loadView('pdfview', compact("data"));
         return $pdf->download('pdf_file.pdf');
     }
     public function createExcel()
