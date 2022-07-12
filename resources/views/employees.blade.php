@@ -36,10 +36,9 @@
     </table>
 </div>
 <div class="d-felx justify-content-center">
-    <ul class='pagination pagination'>
-        @php
-        for($page_number = 1; $page_number<= @$total_pages; $page_number++) { @$pagLink .='<li class="page-item"><a class="page-link" href="?page=' .$page_number.'&search='.$search.'" >'.$page_number.'</a>';}
-    echo @$pagLink . " </ul>" @endphp
+    <ul class='pagination pagination-sm'>
+        {{$employees->links('pagination::bootstrap-4')}}
+    </ul>
 </div>
 
 
