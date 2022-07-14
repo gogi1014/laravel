@@ -1,6 +1,6 @@
 @extends('layout.master')
 @section('content')
-@if ($errors->any())
+@if (count($errors) > 0)
 <div class="alert alert-danger">
   <ul>
     @foreach ($errors->all() as $error)
@@ -11,7 +11,6 @@
 @endif
 <form action="/create" method="post">
   @csrf
-
   <div class="form-group">
     <label for="name">Name</label>
     <input type="text" class="form-control" name="name" id="name" placeholder="Name">
@@ -34,4 +33,5 @@
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
 @endsection

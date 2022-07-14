@@ -20,8 +20,9 @@ class EmployeeController extends Controller
     function getEmployees(Request $request)
     {
         $search = $request->input('search');
-        $employees = Employee::where('name', 'LIKE', "%{$search}%")->orwhere('section', 'LIKE', "%{$search}%")->paginate(2);
-        return view('employees', ['employees' => $employees]);
+        $input = array("search" => $search, "search1" => $search, "pagg" => 3);
+        $employees = new Employee();
+        return view('employees', ['employees' => $employees->getEmp($input)]);
     }
     public function insertform()
     {
@@ -29,14 +30,17 @@ class EmployeeController extends Controller
     }
     function addEmployees(Request $request)
     {
-        $request->validate = [
+        $this->validate($request, [
             'name' => 'required|string|min:3|max:255',
             'age' => 'required|int|max:255',
             'address' => 'required|string|min:3|max:255',
             'section' => 'required|string|min:3|max:255',
             'salary' => 'required|int|max:255',
-        ];
-        Employee::create($request->all());
+        ]);
+        $input = array("name" => "name", "age" => "age", "address" => "address", "section" => "section", "salary" => "salary");
+        $employees = new Employee();
+        $employees->store($employees, $request, $input);
+        $employees->save();
         return redirect('')->with('success', 'Your form has been submitted.');
     }
     public function editEmployees($id)
@@ -44,16 +48,19 @@ class EmployeeController extends Controller
         $data = Employee::find($id);
         return view('editEmployee', ['employees' => $data]);
     }
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $request->validate = [
+        $this->validate($request, [
             'name' => 'required|string|min:3|max:255',
             'age' => 'required|int|max:255',
             'address' => 'required|string|min:3|max:255',
             'section' => 'required|string|min:3|max:255',
             'salary' => 'required|int|max:255',
-        ];
-        Employee::find($id)->update($request->all());
+        ]);
+        $input = array("name" => "name", "age" => "age", "address" => "address", "section" => "section", "salary" => "salary");
+        $employees = Employee::find($request->id);
+        $employees->store($employees, $request, $input);
+        $employees->update();
         return redirect('')->with('success', 'Your form has been updated.');
     }
     public function createPDF()
