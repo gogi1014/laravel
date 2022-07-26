@@ -8,20 +8,19 @@ use App\Exports\EmployeeExport;
 
 use PDF;
 use Maatwebsite\Excel\Facades\Excel;
-
-
-
-
+use Session;
 
 
 
 class EmployeeController extends Controller
 {
-    function getEmployees(Request $request)
+ 
+    public function getEmployees(Request $request)
     {
-        $search = $request->input('search');
-        $input = array("search" => $search, "search1" => $search, "pagg" => 3);
         $employees = new Employee();
+        $search = $request->input('search');
+        $input =array("search" => $search,"pagg" => 2);
+        
         return view('employees', ['employees' => $employees->getEmp($input)]);
     }
     public function insertform()
@@ -37,10 +36,7 @@ class EmployeeController extends Controller
             'section' => 'required|string|min:3|max:255',
             'salary' => 'required|int|max:255',
         ]);
-        $input = array("name" => "name", "age" => "age", "address" => "address", "section" => "section", "salary" => "salary");
-        $employees = new Employee();
-        $employees->store($employees, $request, $input);
-        $employees->save();
+        Employee::store($request);
         return redirect('')->with('success', 'Your form has been submitted.');
     }
     public function editEmployees($id)
@@ -57,21 +53,25 @@ class EmployeeController extends Controller
             'section' => 'required|string|min:3|max:255',
             'salary' => 'required|int|max:255',
         ]);
-        $input = array("name" => "name", "age" => "age", "address" => "address", "section" => "section", "salary" => "salary");
-        $employees = Employee::find($request->id);
-        $employees->store($employees, $request, $input);
-        $employees->update();
+        (new Employee)->upd($request);
         return redirect('')->with('success', 'Your form has been updated.');
     }
-    public function createPDF()
+    public function createPDF(Request $request)
     {
-        $data = Employee::all();
-        view()->share('employees', $data);
-        $pdf = PDF::loadView('pdfview', compact("data"));
+        $employees = new Employee();
+        $search = $request->input('search');
+        $input = array("search" => $search,"pagg" => 2);
+        $pdf = PDF::loadView('pdfview',['employees' => $employees->getEmp($input)]);
         return $pdf->download('pdf_file.pdf');
     }
     public function createExcel()
     {
-        return Excel::download(new EmployeeExport, 'excel.xlsx');
+        return Excel::download(new EmployeeExport(), 'users.xlsx');
     }
+    public function getBlogs(Request $request)
+    {
+        $employee = Employee::get();
+        return response()->json($employee);
+    }  
+    
 }

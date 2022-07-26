@@ -17,17 +17,40 @@ class Employee extends Model
         'salary'
     ];
 
-    public function getEmp($input = array("search" => "", "search1" => "", "pagg" => 0))
+    public function getEmp($input)
     {
-        return Employee::where('name', 'LIKE', "%{$input["search"]}%")->orwhere('section', 'LIKE', "%{$input["search1"]}%")->paginate($input["pagg"]);
+        $pagg = 5;
+        $search = Employee::orderBy('id');
+        if (isset($input['search'])) {
+            $search->where('name', 'LIKE', "%".$input["search"]."%")->orwhere('section', 'LIKE', "%".$input["search"]."%");
+        }   
+        if (isset($input['pagg'])) {
+         return $search->paginate($input['pagg']);
+        } 
+        return $search->paginate($pagg);
     }
 
-    public function store($employees, $request, $input = array("name" => "", "age" => 0, "address" => "", "section" => "", "salary" => 0))
+    public static function store($request)
     {
-        $employees->name = $request->input($input["name"]);
-        $employees->age = $request->input($input["age"]);
-        $employees->address = $request->input($input["address"]);
-        $employees->section = $request->input($input["section"]);
-        $employees->salary = $request->input($input["salary"]);
+        $input = $request->input();
+        $employees = new Employee();
+        $employees->name = $input["name"];
+        $employees->age = $input["age"];
+        $employees->address = $input["address"];
+        $employees->section = $input["section"];
+        $employees->salary = $input["salary"];
+        $employees->save();
+    }
+
+    public function upd($request)
+    {
+        $input = $request->input();
+        $employees = Employee::find($request->id);
+        $employees->name = $input["name"];
+        $employees->age = $input["age"];
+        $employees->address = $input["address"];
+        $employees->section = $input["section"];
+        $employees->salary = $input["salary"];
+        $employees->update();
     }
 }

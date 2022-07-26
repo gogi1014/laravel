@@ -6,9 +6,79 @@
     <input type="text" name="search" required />
     <button type="submit">Search</button>
     <input type="button" onclick="printDiv('printableArea')" value="Print" />
-    <a class="btn btn-primary" href="{{ URL::to('/pdf') }}">Export to PDF</a>
+    <a class="btn btn-primary" href="{{ URL::to('/pdf') }}" value="pdf">Export to PDF</a>
     <a class="btn btn-primary" href="{{ URL::to('/excel') }}">Export to Excel</a>
 </form>
+
+<script type="importmap">
+  {
+    "imports": {
+      "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+    }
+  }
+</script>
+<div id="app">@{{ posts }}</div>
+
+<script type="module">
+  import { createApp } from 'vue'
+  
+
+
+  createApp({
+    data() {
+      return {
+        posts: []
+      }
+    },
+    methods: {
+            showBlogs: function () {
+                axios.get('/blog').then(function (res) {
+                    this.posts = res.data;
+                }.bind(this));
+            }
+        },
+        created: function () {
+            this.showBlogs()
+        },
+    template: `
+    <table class="table table-striped table-dark">
+    <thead>
+        <tr>
+          <th class="text-left">
+            Name
+          </th>
+          <th class="text-left">
+            Age
+          </th>
+          <th class="text-left">
+            Address
+          </th>
+          <th class="text-left">
+            Section
+          </th>
+          <th class="text-left">
+            Salary
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="item in posts"
+          :key="item.name"
+        >
+          <td>@{{ item.name }}</td>
+          <td>@{{ item.age }}</td>
+          <td>@{{ item.address }}</td>
+          <td>@{{ item.secion }}</td>
+          <td>@{{ item.salary }}</td>
+          <td><a href="@{{ url('edit/'.$itemid) }}" class="btn btn-primary btn-sm">Edit</a></td>
+        </tr>
+      </tbody>
+      </table>`
+  }
+  ).mount('#app')
+</script>
+
 
 <div id="printableArea">
     <table class="table table-striped table-dark">
@@ -37,7 +107,7 @@
 </div>
 <div class="d-felx justify-content-center">
     <ul class='pagination pagination-sm'>
-        {{$employees->links('pagination::bootstrap-4')}}
+        {{$employees->appends($_GET)->links('pagination::bootstrap-4')}}
     </ul>
 </div>
 
