@@ -32,7 +32,7 @@ Route::get('excel', [EmployeeController::class, 'createExcel']);
 
 Route::get('/blog', [EmployeeController::class, 'getBlogs']);
 
-Route::delete('delete/{id}', [EmployeeController::class, 'getBlogs']);
+Route::delete('delete/{id}', [EmployeeController::class, 'delete']);
 
 
 Auth::routes();

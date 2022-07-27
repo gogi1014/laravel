@@ -73,5 +73,16 @@ class EmployeeController extends Controller
         $employee = Employee::get();
         return response()->json($employee);
     }  
+    public function delete($id)
+    {
+        $employee = new Employee;
+        $employee = Employee::find($id);
+        if(!$employee){
+            return ["status"=>false,"message" => "Employee not found"];
+        }
+        $employee->delete();
+        return ["status"=>true];
+
+    }  
     
 }
